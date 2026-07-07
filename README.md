@@ -1,5 +1,10 @@
 # blog-cms-api
 
+![Go](https://img.shields.io/badge/Go-1.25-00ADD8?logo=go&logoColor=white)
+[![CI](https://github.com/ezhigval/blog-cms-api/actions/workflows/ci.yml/badge.svg)](https://github.com/ezhigval/blog-cms-api/actions/workflows/ci.yml)
+![License](https://img.shields.io/badge/license-MIT-blue)
+![Tier](https://img.shields.io/badge/tier-middle-5319e7)
+
 Blog CMS: **Go REST API** + **Next.js 15** frontend. Posts, categories, tags, pg_trgm search, JWT auth, image uploads.
 
 ## Quick start
