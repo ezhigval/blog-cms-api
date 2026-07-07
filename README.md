@@ -5,6 +5,8 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Tier](https://img.shields.io/badge/tier-middle-5319e7)
 
+**English** · [Русский](README.ru.md)
+
 Blog CMS: **Go REST API** + **Next.js 15** frontend. Posts, categories, tags, pg_trgm search, JWT auth, image uploads.
 
 ## Quick start
