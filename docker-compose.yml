@@ -1,0 +1,64 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: blog
+      POSTGRES_PASSWORD: blog
+      POSTGRES_DB: blog
+    ports:
+      - "5439:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blog"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  migrate:
+    image: golang:1.25-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      DATABASE_URL: postgres://blog:blog@postgres:5432/blog?sslmode=disable
+    command: sh -c "go install github.com/pressly/goose/v3/cmd/goose@latest && goose -dir migrations postgres \"$$DATABASE_URL\" up"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"
+    environment:
+      PORT: "8090"
+      DATABASE_URL: postgres://blog:blog@postgres:5432/blog?sslmode=disable
+      JWT_SECRET: dev-only-change-in-production-32chars
+      PUBLIC_URL: http://localhost:8090
+      CORS_ORIGINS: http://localhost:3001
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8090
+      API_URL: http://api:8090
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+  uploads:
